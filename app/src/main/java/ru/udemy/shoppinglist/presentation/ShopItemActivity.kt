@@ -8,7 +8,7 @@ import ru.udemy.shoppinglist.R
 import ru.udemy.shoppinglist.databinding.ActivityShopItemBinding
 import ru.udemy.shoppinglist.domain.ShopItem
 
-class ShopItemActivity : AppCompatActivity() {
+class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
 
     private lateinit var binding: ActivityShopItemBinding
 
@@ -75,5 +75,9 @@ class ShopItemActivity : AppCompatActivity() {
             }
             shopItemId = intent.getIntExtra(EXTRA_SHOP_ITEM_ID, ShopItem.UNDEFINED_ID)
         }
+    }
+
+    override fun onEditingFinished() {
+        finish()
     }
 }

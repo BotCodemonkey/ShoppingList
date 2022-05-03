@@ -1,6 +1,7 @@
 package ru.udemy.shoppinglist.presentation
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -10,7 +11,7 @@ import ru.udemy.shoppinglist.R
 import ru.udemy.shoppinglist.databinding.ActivityMainBinding
 import ru.udemy.shoppinglist.presentation.RecyclerView.ShopListAdapter
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -32,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.buttonAddShopItem.setOnClickListener {
-            if(isOnePaneMode()) {
+            if (isOnePaneMode()) {
                 val intent = ShopItemActivity.newIntentAddItem(this)
                 startActivity(intent)
             } else {
@@ -95,7 +96,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupClickListener() {
         shopListAdapter.onShopItemClickListener = {
-            if(isOnePaneMode()) {
+            if (isOnePaneMode()) {
                 val intent = ShopItemActivity.newIntentEditItem(this, it.id)
                 startActivity(intent)
             } else {
@@ -108,5 +109,10 @@ class MainActivity : AppCompatActivity() {
         shopListAdapter.onShopItemLongClickListener = {
             viewModel.changedEnableState(it)
         }
+    }
+
+    override fun onEditingFinished() {
+        Toast.makeText(this@MainActivity, "Success", Toast.LENGTH_SHORT).show()
+        supportFragmentManager.popBackStack()
     }
 }
