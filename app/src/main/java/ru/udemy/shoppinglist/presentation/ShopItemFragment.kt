@@ -1,5 +1,6 @@
 package ru.udemy.shoppinglist.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -21,6 +22,12 @@ class ShopItemFragment : Fragment() {
 
     private var screenMode: String = MODE_UNKNOWN
     private var shopItemId: Int = ShopItem.UNDEFINED_ID
+
+    interface OnEditingFinishedListener {
+        fun onEditingFinished()
+    }
+
+    private lateinit var onEditingFinishedListener: OnEditingFinishedListener
 
     companion object {
         private const val SCREEN_MODE = "extra_mode"
@@ -46,6 +53,15 @@ class ShopItemFragment : Fragment() {
                     putInt(SHOP_ITEM_ID, shopItemId)
                 }
             }
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnEditingFinishedListener) {
+            onEditingFinishedListener = context
+        } else {
+            throw RuntimeException("Activity must implement listener")
         }
     }
 
@@ -93,7 +109,7 @@ class ShopItemFragment : Fragment() {
             binding.tilName.error = message
         }
         viewModel.shouldCloseScreen.observe(viewLifecycleOwner) {
-            activity?.onBackPressed()
+            onEditingFinishedListener.onEditingFinished()
         }
     }
 
