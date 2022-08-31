@@ -2,6 +2,7 @@ package ru.udemy.shoppinglist.data
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import ru.udemy.shoppinglist.domain.ShopItem
 import ru.udemy.shoppinglist.domain.ShopListRepository
 
@@ -24,10 +25,19 @@ class ShopListRepositoryImpl(application: Application) : ShopListRepository {
     }
 
     override fun getShopItem(shopItemId: Int): ShopItem {
-       val dbModel = shopListDao.getShopItem(shopItemId)
+        val dbModel = shopListDao.getShopItem(shopItemId)
         return mapper.mapDbModelToEntity(dbModel)
     }
 
-    override fun getShopList(): LiveData<List<ShopItem>> = shopListDao.getShopList()
+    override fun getShopList(): LiveData<List<ShopItem>> =
+        Transformations.map(shopListDao.getShopList()) {
+            mapper.mapListDbModelToListEntity(it)
+        }
+
+//        MediatorLiveData<List<ShopItem>>().apply {
+//        addSource(shopListDao.getShopList()) {
+//            value = mapper.mapListDbModelToListEntity(it)
+//        }
+//    }
 
 }
